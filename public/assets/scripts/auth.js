@@ -111,16 +111,19 @@ if(authPage){
             .then(response => window.location.href = "/")
             .catch(showAlertError(formAuthLogin))
     })
+   
+}
 
+ /*
     document.querySelector("#login .facebook").addEventListener("click", e => {
         const provider = new firebase.auth.FacebookAuthProvider();
 
         auth.signInWithRedirect(provider);
-        /*
+        
         auth
            .signInWithPopup(provider)
             .then( window.location.href = "/")
             .catch(showAlertError(formAuthLogin));
-        */  
-    })
-}
+          
+      })
+    */ 
