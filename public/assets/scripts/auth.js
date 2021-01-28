@@ -1,5 +1,5 @@
 import firebase from './firebase-app';
-import { getFormValues, hideAlertError, showAlertError } from './utils';
+import { getFormValues, getQueryString, hideAlertError, showAlertError } from './utils';
 
 const authPage = document.querySelector('main#auth')
 
@@ -41,8 +41,16 @@ if(authPage){
                 showAuthForm('reset')
                 break
             default :
+
+                const params = getQueryString()
+
+                if (params.mode === 'resetPassword') {
+                    showAuthForm('reset')
+                } else {
+                    showAuthForm('login')
+                }
                // showAuthForm('auth-email')
-               showAuthForm('login')
+               
         }
     }
 
@@ -108,10 +116,94 @@ if(authPage){
 
         auth
             .signInWithEmailAndPassword(values.email, values.password)
-            .then(response => window.location.href = "/")
+            .then(response => {           
+
+                const values = getQueryString()
+
+                if(values.url) {
+                    window.location.href = `http://localhost:8080${values.url}`
+                } else {
+                    window.location.href = "/"
+                }  
+
+            })
             .catch(showAlertError(formAuthLogin))
     })
    
+    const formForget = document.querySelector('#forget')
+
+    formForget.addEventListener('submit', e => {
+
+        e.preventDefault()
+
+        const btnSubmit = formForget.querySelector('[type=submit]')
+        const message = formForget.querySelector('.message');
+        const field = formForget.querySelector('.field');
+        const actions = formForget.querySelector('.actions');
+
+        hideAlertError(formForget)
+
+        const values = getFormValues(formForget)
+
+        message.getElementsByClassName.display = 'none';
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = "Enviando...";
+
+        auth
+            .sendPasswordResetEmail(values.email)
+            .then(()=>{
+
+                field.style.display = 'none';
+                actions.style.display = 'none';
+                message.style.display = "block";
+            })
+            .catch(()=> {
+
+                field.style.display = 'block';
+                actions.style.display = 'block';
+                showAlertError(formForget)(error);
+
+            })
+            .finally(()=> {
+
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = "Enviar";
+            })
+    })
+
+    const formReset = document.querySelector('#reset') 
+
+    formReset.addEventListener('submit', e => {
+
+        e.preventDefault();
+
+        const btnSubmit = formReset.querySelector('[type=submit]')
+
+        btnSubmit.disabled = true
+        btnSubmit.innerHTML = "Redefinindo...";
+
+        const { oobcode } = getQueryString()
+        const { password } = getFormValues(formReset)
+
+        hideAlertError(formReset)
+
+        auth
+            .verifyPasswordResetCode(oobcode)
+            .then(() =>  auth.confirmPasswordReset(oobcode, password))
+            .then(() => {
+
+                window.location.href = "/";
+            })
+            .catch(showAlertError(formReset))
+            .finally(() => {
+
+                btnSubmit.disabled = false
+                btnSubmit.innerHTML = "Redefinir";
+
+            })
+    })
+
 }
 
  /*

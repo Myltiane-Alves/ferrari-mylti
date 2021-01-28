@@ -100,3 +100,19 @@ export function showAlertError(form) {
         alertElement.style.display = "block"
     }
 }
+
+export function formatCurrency(value ) {
+
+    return parseFloat(value).toLocaleString('pt-br', {
+        style: 'currency',
+        Currency: 'BRL'
+    })
+}
+
+export function onSnapshotError(err)  {
+
+        const pathname = encodeURIComponent(window.location.pathname)
+        const search = encodeURIComponent(window.location.search)
+
+       window.location.href = `/auth.html?url=${pathname}${search}`;
+}

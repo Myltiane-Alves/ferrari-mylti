@@ -7,9 +7,10 @@
       "**/node_modules/**"
     ]
   },
-  " apiKey": "AIzaSyDrGJBbPG35dV0eOMzQSc_zoQ4XEDJrY14",
+
+  "apiKey": "AIzaSyDrGJBbPG35dV0eOMzQSc_zoQ4XEDJrY14",
   "authDomain": "ferrar-myltiane.firebaseapp.com",
-  " projectId": "ferrar-myltiane",
+  "projectId": "ferrar-myltiane",
   "storageBucket": "ferrar-myltiane.appspot.com",
   "messagingSenderId": "1028912670135",
   "appId": "1:1028912670135:web:e9db7cece232b6bc8f7432",

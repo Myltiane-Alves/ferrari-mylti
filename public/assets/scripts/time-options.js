@@ -1,37 +1,16 @@
 import { format, parse } from "date-fns"
-import { ptBR } from 'date-fns/locale'
 import { appendTemplate, getFormValues, getQueryString, setFormValues } from "./utils"
+import { firebase } from './firebase-app';
+import { ptBR } from 'date-fns/locale'
 
-const data = [{
-    id: 1,
-    value: '9:00'
-}, {
-    id: 2,
-    value: '10:00'
-}, {
-    id: 3,
-    value: '11:00'
-}, {
-    id: 4,
-    value: '12:00'
-}, {
-    id: 5,
-    value: '13:00'
-}, {
-    id: 6,
-    value: '14:00'
-}, {
-    id: 7,
-    value: '15:00'
-}]
 
-const renderTimeOptions = context => {
+const renderTimeOptions = (context, timeOptions) => {
 
     const targetElement = context.querySelector(".options")
 
     targetElement.innerHTML = ""
 
-    data.forEach(item => {
+    timeOptions.forEach(item => {
 
         appendTemplate(
             targetElement,
@@ -43,8 +22,6 @@ const renderTimeOptions = context => {
         )
 
     })
-
-    
 
 }
 
@@ -77,9 +54,6 @@ const validateSubmitForm = context => {
 
     context.querySelector("form").addEventListener("submit", e => {
 
-        e.preventDefault()
-        console.log(getFormValues(e.target))
-
         if (!context.querySelector("[name=option]:checked")) {
             button.disabled = true
             e.preventDefault()
@@ -91,14 +65,36 @@ const validateSubmitForm = context => {
 
 document.querySelectorAll("#time-options").forEach(page => {
 
-    renderTimeOptions(page)
+    const auth = firebase.auth()
+    const db = firebase.firestore();
 
-    validateSubmitForm(page)
+    auth.onAuthStateChanged(user => {
+
+        db.collection('time-options').onSnapshot(snapshot => {
+
+            const timeOptions = [];
+    
+            snapshot.forEach(item => {
+    
+                timeOptions.push(item.data());
+            })
+    
+            renderTimeOptions(page, timeOptions)
+    
+            validateSubmitForm(page)
+            
+        }, onSnapshotError);
+
+    });
 
     const params = getQueryString()
     const title = page.querySelector("h3")
     const form = page.querySelector("form")
     const scheduleAt = parse(params.schedule_at, "yyyy-MM-dd", new Date())
+
+    if (scheduleAt.toString() === 'Invalid Date') {
+        window.history.back(-1)
+    }
 
     setFormValues(form, params)
 
