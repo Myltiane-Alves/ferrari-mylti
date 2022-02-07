@@ -1,56 +1,44 @@
-import firebase from './firebase-app';
-import { getFormValues, getQueryString, hideAlertError, showAlertError } from './utils';
+const authPage = document.querySelector('main#auth');
 
-const authPage = document.querySelector('main#auth')
-
-if(authPage){
-
-    const auth = firebase.auth();
-
+if(authPage) {
+    //aqui estou escondendo os formulários de autenticação
     const hideAuthForms = () => {
+        
+        document.querySelectorAll('#auth form')
+        .forEach( el => el.classList.add('hide'));
 
-        document.querySelectorAll("#auth form")
-        .forEach( el => el.classList.add('hide'))
     }
-
+    //aqui eu estou exibindo o formulário de autentição para o usuário
     const showAuthForm = id => {
 
-        document.getElementById(id).classList.remove('hide')
+        document.getElementById(id).classList.remove('hide');
     }
 
-    const authHash = () =>{
-        hideAuthForms()
+    const authHash = () => {
+        hideAuthForms();
 
-        if(sessionStorage.getItem('email')){
-            document.querySelectorAll('[name=email]')
+        // verificando se o email está gravando no sessionStorage
+        if(sessionStorage.getItem('email')) {
+            document.querySelectorAll('[name="email"]')
             .forEach(el => el.value = sessionStorage.getItem('email'))
         }
-
         //analise o hash na url da window. window.location.hash
-        switch(window.location.hash){
-            case '#register' :
-                showAuthForm('register')
-                break
+
+        switch(window.location.hash) {
+            case '#register':
+                showAuthForm('register');
+                break;
             case '#login' :
-                showAuthForm('login')
-                break
+                showAuthForm('login')    
+                break;
             case '#forget' :
                 showAuthForm('forget')
-                break
+                break;
             case '#reset' :
                 showAuthForm('reset')
-                break
-            default :
-
-                const params = getQueryString()
-
-                if (params.mode === 'resetPassword') {
-                    showAuthForm('reset')
-                } else {
-                    showAuthForm('login')
-                }
-               // showAuthForm('auth-email')
-               
+                break;
+            default:
+                showAuthForm('auth-email');        
         }
     }
 
@@ -67,155 +55,14 @@ if(authPage){
     formAuthEmail.addEventListener('submit', e => {
 
         e.preventDefault()
-        //e.stopPropagation()
         const btnSubmit = e.target.querySelector('[type=submit]')
-        btnSubmit.disabled = true
-
-        sessionStorage.setItem('email', formAuthEmail.email.value)
-        location.hash = '#login'
-        btnSubmit.disabled = false
-        
-    })
-
-    const formAuthRegister = document.querySelector("#register")
-    const alertDangerRegister =  formAuthRegister.querySelector('.alert.danger')
-
-    formAuthRegister.addEventListener('submit', e => {
-
-        e.preventDefault()
-
-        hideAlertError(formAuthRegister)
-
-
-        const values = getFormValues(formAuthRegister)
-
-        auth
-            .createUserWithEmailAndPassword(values.email, values.password)
-            .then(response => {
-
-                const { user } = response
-
-                user.updateProfile({
-                    displayName: values.name
-                })
-
-                window.location.href = '/'
-            })
-            .catch(showAlertError(formAuthRegister))
-    })
-
-    const formAuthLogin = document.querySelector("#login")
-
-    formAuthLogin.addEventListener("submit", e => {
-
-        e.preventDefault()
-
-        hideAlertError(formAuthLogin)
-
-        const values = getFormValues(formAuthLogin)
-
-        auth
-            .signInWithEmailAndPassword(values.email, values.password)
-            .then(response => {           
-
-                const values = getQueryString()
-
-                if(values.url) {
-                    window.location.href = `http://localhost:8080${values.url}`
-                } else {
-                    window.location.href = "/"
-                }  
-
-            })
-            .catch(showAlertError(formAuthLogin))
-    })
-   
-    const formForget = document.querySelector('#forget')
-
-    formForget.addEventListener('submit', e => {
-
-        e.preventDefault()
-
-        const btnSubmit = formForget.querySelector('[type=submit]')
-        const message = formForget.querySelector('.message');
-        const field = formForget.querySelector('.field');
-        const actions = formForget.querySelector('.actions');
-
-        hideAlertError(formForget)
-
-        const values = getFormValues(formForget)
-
-        message.getElementsByClassName.display = 'none';
 
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = "Enviando...";
-
-        auth
-            .sendPasswordResetEmail(values.email)
-            .then(()=>{
-
-                field.style.display = 'none';
-                actions.style.display = 'none';
-                message.style.display = "block";
-            })
-            .catch(()=> {
-
-                field.style.display = 'block';
-                actions.style.display = 'block';
-                showAlertError(formForget)(error);
-
-            })
-            .finally(()=> {
-
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = "Enviar";
-            })
-    })
-
-    const formReset = document.querySelector('#reset') 
-
-    formReset.addEventListener('submit', e => {
-
-        e.preventDefault();
-
-        const btnSubmit = formReset.querySelector('[type=submit]')
-
-        btnSubmit.disabled = true
-        btnSubmit.innerHTML = "Redefinindo...";
-
-        const { oobcode } = getQueryString()
-        const { password } = getFormValues(formReset)
-
-        hideAlertError(formReset)
-
-        auth
-            .verifyPasswordResetCode(oobcode)
-            .then(() =>  auth.confirmPasswordReset(oobcode, password))
-            .then(() => {
-
-                window.location.href = "/";
-            })
-            .catch(showAlertError(formReset))
-            .finally(() => {
-
-                btnSubmit.disabled = false
-                btnSubmit.innerHTML = "Redefinir";
-
-            })
-    })
-
-}
-
- /*
-    document.querySelector("#login .facebook").addEventListener("click", e => {
-        const provider = new firebase.auth.FacebookAuthProvider();
-
-        auth.signInWithRedirect(provider);
         
-        auth
-           .signInWithPopup(provider)
-            .then( window.location.href = "/")
-            .catch(showAlertError(formAuthLogin));
-          
-      })
-    */ 
+        sessionStorage.setItem('email', formAuthEmail.email.value)
+        location.hash = '#login'
+        btnSubmit.disabled = false;
+
+        console.log('emai');
+    })
+}

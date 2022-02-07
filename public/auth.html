@@ -58,10 +58,8 @@
 
                 <hr />
 
-               
-
                 <div class="field">
-                    <input type="email" name="email" id="email-login" />
+                    <input type="email" name="email" id="email-login" readonly value="joao@hcode.com.br" />
                     <label for="email-login">E-mail</label>
                 </div>
 
@@ -70,14 +68,11 @@
                     <label for="password">Digite sua Senha</label>
                 </div>
 
-                
-                <div class="alert danger"></div>
-
                 <div class="actions">
 
                     <div>
                         <a href="auth.html#forget" class="link">Esqueceu sua senha?</a>
-                        <a href="auth.html#resgiter" class="link">criar conta</a>
+                        <a href="auth.html" class="link">Este não é o seu e-mail?</a>
                     </div>
                     <button type="submit">Login</button>
 
@@ -92,8 +87,8 @@
                 <hr />
 
                 <div class="field">
-                    <input type="email" name="email" id="email-register" />
-                    <label for="email-register">E-mail</label>
+                    <input type="email" name="email" id="email-login" readonly value="joao@hcode.com.br" />
+                    <label for="email-login">E-mail</label>
                 </div>
 
                 <div class="field">
@@ -116,8 +111,6 @@
                     <label for="password-confirm">Confirme a Senha</label>
                 </div>
 
-                <div class="alert danger"></div>
-
                 <div class="actions">
 
                     <a href="auth.html#login" class="link">Já tem uma conta?</a>
@@ -133,17 +126,6 @@
 
                 <hr />
 
-                <div class="field">
-                    <input type="email" name="email" id="email-forget" />
-                    <label for="email-forget">E-mail</label>
-                </div>
-
-                <div class="alert danger"></div>
-
-                <div class="acetions">
-                    <button class="submit">Enviar</button>
-                </div>
-                <!--
                 <div class="loading-wrap">
                     <div class="loading">
                         <div></div>
@@ -153,8 +135,8 @@
                     </div>
                     <p>Por favor, aguarde...</p>
                 </div>
-                -->
-                <div class="message" style="display: none">
+
+                <div class="message">
 
                     <img src="assets/images/check-circle.svg" alt="Ok" />
                     <span>Verifique as instruções no seu e-mail.</span>
@@ -187,7 +169,7 @@
         </section>
 
     </main>
-
-    <script src="bundle.js"></script>
+<script src="assets/scripts/main.js"></script>
+<script src="assets/scripts/auth.js"></script>
 </body>
 </html>
